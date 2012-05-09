@@ -12,14 +12,14 @@ except ImportError:
     from celery.decorators import task
 from celery.signals import task_failure
 from raven.base import Client
+from raven.contrib.celery.tasks import send_task
 
 
 class CeleryMixin(object):
     def send_encoded(self, message):
         "Errors through celery"
-        self.send_raw.delay(message)
+        send_task.delay(message)
 
-    @task(routing_key='sentry')
     def send_raw(self, message):
         return super(CeleryMixin, self).send_encoded(message)
 
